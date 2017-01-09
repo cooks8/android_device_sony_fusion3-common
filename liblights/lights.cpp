@@ -49,19 +49,19 @@ static int lights_set_light(struct light_device_t* dev,
                             struct light_state_t const* state);
 
 struct hw_module_methods_t lights_module_methods = {
-    open: open_lights,
+    .open = open_lights,
 };
 
 hw_module_t HAL_MODULE_INFO_SYM = {
-    tag: HARDWARE_MODULE_TAG,
-    version_major: 1,
-    version_minor: 0,
-    id: LIGHTS_HARDWARE_MODULE_ID,
-    name: "Xperia Lights Wrapper",
-    author: "The CyanogenMod Project",
-    methods: &lights_module_methods,
-    dso: NULL,
-    reserved: {0},
+    .tag = HARDWARE_MODULE_TAG,
+    .version_major = 1,
+    .version_minor = 0,
+    .id = LIGHTS_HARDWARE_MODULE_ID,
+    .name = "Xperia Lights Wrapper",
+    .author = "The CyanogenMod Project",
+    .methods = &lights_module_methods,
+    .dso = NULL,
+    .reserved = {0},
 };
 
 typedef struct wrapper_light_device {
@@ -210,7 +210,7 @@ static int get_max_brightness() {
     return (unsigned int) max_brightness;
 }
 
-static int lights_set_light_backlight (struct light_device_t *dev, struct light_state_t const *state) {
+static int lights_set_light_backlight (struct light_device_t *dev __unused, struct light_state_t const *state) {
     int err = 0;
     int brightness = rgb_to_brightness(state);
     int max_brightness = get_max_brightness();
@@ -263,7 +263,8 @@ static int open_lights(const hw_module_t* module, const char* name,
         }
         memset(light_device, 0, sizeof(*light_device));
 
-        if (rv = gVendorModule->methods->open((const hw_module_t*)gVendorModule, name, (hw_device_t**)&(light_device->vendor))) {
+        rv = gVendorModule->methods->open((const hw_module_t*)gVendorModule, name, (hw_device_t**)&(light_device->vendor));
+        if (rv) {
             ALOGE("vendor light open fail");
             goto fail;
         }

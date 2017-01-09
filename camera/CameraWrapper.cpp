@@ -134,7 +134,7 @@ void camera_fixup_capability(android::CameraParameters *params)
     }
 }
 
-static char *camera_fixup_getparams(int id, const char *settings)
+static char *camera_fixup_getparams(int id __unused, const char *settings)
 {
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
@@ -150,8 +150,8 @@ static char *camera_fixup_getparams(int id, const char *settings)
         // fixup the iso mode list with those that are in the sony list
         const char *isoModeList = params.get(KEY_SONY_ISO_AVAIL_MODES);
         char buffer[255] = "ISO";
-        char bufferPos = 3;
-        for (int pos = 0; pos < strlen(isoModeList); pos++) {
+        int bufferPos = 3;
+        for (size_t pos = 0; pos < strlen(isoModeList); pos++) {
             if (isoModeList[pos] != ',') {
                 buffer[bufferPos++] = isoModeList[pos];
             } else {
@@ -221,7 +221,7 @@ static char *camera_fixup_getparams(int id, const char *settings)
     return ret;
 }
 
-static char *camera_fixup_setparams(int id, const char *settings)
+static char *camera_fixup_setparams(int id __unused, const char *settings)
 {
     android::CameraParameters params;
     params.unflatten(android::String8(settings));
